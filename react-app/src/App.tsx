@@ -4,9 +4,10 @@ import './App.css';
 
 function App() {
   return (
+    // "https://docfiles.blob.core.windows.net/files/image/TQ1_AzureSQLDatabaseOfflineMigration_00.png"
     <div className="App">
       <header className="App-header">
-        <img src={"https://docfiles.blob.core.windows.net/files/image/TQ1_AzureSQLDatabaseOfflineMigration_00.png"} className="App-logo" alt="logo" />
+        <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
