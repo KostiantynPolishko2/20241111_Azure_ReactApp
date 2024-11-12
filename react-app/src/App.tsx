@@ -1,15 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { OpenAI } from "openai";
+
+const getNameAsteroid = (e: React.FormEvent<HTMLInputElement>): string | null => {
+  e.preventDefault();
+  
+  if(e.currentTarget.value.length > 3){
+    return e.currentTarget.value;
+  }
+
+  return null
+}
 
 function App() {
+
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [nameAsteroid, setNameAsteroid] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log('asterod', nameAsteroid);
+  }, [nameAsteroid]);
+
+  const generateImageUrl = async () => {
+    console.log('call function: generateImageUrl()');
+    const openai = new OpenAI({apiKey: process.env.REACT_APP_OPENAI_KEY, dangerouslyAllowBrowser: true});
+  
+    try{
+      const responce = await openai.images.generate({
+        model: 'dall-e-3',
+        prompt: `asteroid ${nameAsteroid || ''}`,
+        n: 1
+      }); 
+
+      setImageUrl(responce.data[0].url?.toString() || null);
+    }
+    catch(error){
+     
+      setImageUrl(null);
+    }
+  }
+
   return (
-    // "https://docfiles.blob.core.windows.net/files/image/TQ1_AzureSQLDatabaseOfflineMigration_00.png"
     <div className="App">
       <header className="App-header">
-        <img src={"https://docfiles.blob.core.windows.net/files/image/TQ1_AzureSQLDatabaseOfflineMigration_00.png"} className="App-logo" alt="logo" />
+        <img src={imageUrl || logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          asteroid {nameAsteroid || ''}
         </p>
         <a
           className="App-link"
@@ -18,8 +55,9 @@ function App() {
           rel="noopener noreferrer"
         >
           Learn React
-          Test on Azure
         </a>
+        <input onBlur={(e) => {setNameAsteroid(getNameAsteroid(e))}} placeholder='asteroid name'></input>
+        <button onClick={generateImageUrl}>ImageUrl</button>
       </header>
     </div>
   );
